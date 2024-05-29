@@ -8,6 +8,7 @@ export type TGuardian = {
   motherOccupation: string;
   motherContactNo: string;
 };
+
 export type TUserName = {
   firstName: string;
   middleName?: string;
@@ -36,6 +37,7 @@ export type TStudent = {
   avatar?: string;
   localGuardian: TLocalGuardian;
   profileImg?: string;
+  admissionSemester: Types.ObjectId;
   isDeleted: boolean;
 };
 //for creating static

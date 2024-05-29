@@ -42,7 +42,7 @@ const createStudentValidationZodSchema = z.object({
     student: z.object({
       name: userNameValidationSchema,
       gender: z.enum(['male', 'female', 'other']),
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().optional(),
       email: z.string().min(1, 'Email is required').email('Email is not valid'),
       contactNo: z.string().min(1, 'Contact Number is required'),
       emergencyContactNo: z
@@ -55,11 +55,11 @@ const createStudentValidationZodSchema = z.object({
       permanentAddress: z.string().min(1, 'Permanent Address is required'),
       guardian: guardianValidationSchema,
       localGuardian: localguardianValidationSchema,
+      admissionSemester: z.string(),
       profileImg: z.string().optional(),
     }),
   }),
 });
-
 export const createStudentValidation = {
   createStudentValidationZodSchema,
 };
