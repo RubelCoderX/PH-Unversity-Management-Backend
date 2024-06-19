@@ -1,7 +1,7 @@
 import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
-import { Admin } from '../admin/admin.model';
 import { User } from './user.model';
 
+//find last studentId
 const findLastStudentId = async () => {
   const lastStudent = await User.findOne(
     {
@@ -19,16 +19,23 @@ const findLastStudentId = async () => {
   return lastStudent?.id ? lastStudent.id : undefined;
 };
 
-//auto generate id for student
+// auto generate id for student
 export const generateStudentId = async (payload: TAcademicSemester) => {
-  //first time 0000
+  // console.log(payload);
+  // first time 0000
   let currentId = (0).toString();
+  // console.log(currentId);
+
   const lastStudentId = await findLastStudentId();
-  //2030 01 0001
+
+  // 2030 01 0001
   const lastStudentSemesterCode = lastStudentId?.substring(4, 6); // 01
-  const lastStudentSemesterYear = lastStudentId?.substring(0, 4); //2030
+  const lastStudentSemesterYear = lastStudentId?.substring(0, 4); // 2030
+
   const currentSemesterCode = payload.code;
+
   const currentSemesterYear = payload.year;
+
   if (
     lastStudentId &&
     lastStudentSemesterCode === currentSemesterCode &&
@@ -37,11 +44,11 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
     currentId = lastStudentId.substring(6);
   }
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+  // console.log(incrementId);
 
   incrementId = `${payload.year}${payload.code}${incrementId}`;
   return incrementId;
 };
-
 // auto generate for faculty id
 
 const findLastFacultyId = async () => {

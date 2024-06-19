@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { model, Schema } from 'mongoose';
 import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import { UserStatus } from './user.constant';
 
 const userSchema = new Schema<TUser, UserModel>(
   {
@@ -10,13 +12,23 @@ const userSchema = new Schema<TUser, UserModel>(
       required: true,
       unique: true,
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     password: {
       type: String,
       required: true,
+      select: 0,
     },
     needsPasswordChange: {
       type: Boolean,
       default: true,
+    },
+    passwordChangesAt: {
+      type: Date,
     },
     role: {
       type: String,
@@ -24,7 +36,7 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     status: {
       type: String,
-      enum: ['in-progress', 'blocked'],
+      enum: UserStatus,
       default: 'in-progress',
     },
     isDeleted: {
@@ -60,7 +72,7 @@ userSchema.post('save', function (doc, next) {
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
   return await User.findOne({
     id,
-  });
+  }).select('+password');
 };
 // Static method to check if the password matches
 userSchema.statics.isPasswordMatched = async function (
@@ -68,6 +80,15 @@ userSchema.statics.isPasswordMatched = async function (
   hashedPassword,
 ) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+// check jwt issued Before Password Changed
+userSchema.statics.isJwtIssuedBeforePasswordChanged = async function (
+  passwordChangedTimeStamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimeStamp).getTime() / 1000;
+  return passwordChangedTime > jwtIssuedTimestamp;
 };
 
 export const User = model<TUser, UserModel>('User', userSchema);

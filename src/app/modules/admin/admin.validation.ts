@@ -15,7 +15,7 @@ const createAdminNameVaditionSchema = z.object({
 
 export const createAdminVaditionSchema = z.object({
   body: z.object({
-    password: z.string().max(20),
+    password: z.string().max(20).optional(),
     admin: z.object({
       designation: z.string(),
       name: createAdminNameVaditionSchema,
@@ -28,7 +28,7 @@ export const createAdminVaditionSchema = z.object({
       presentAddress: z.string(),
       permanentAddress: z.string(),
 
-      profileImg: z.string(),
+      // profileImg: z.string(),
     }),
   }),
 });

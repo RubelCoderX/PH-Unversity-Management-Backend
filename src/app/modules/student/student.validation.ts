@@ -38,7 +38,7 @@ const localguardianValidationSchema = z.object({
 // Define the Student schema
 const createStudentValidationZodSchema = z.object({
   body: z.object({
-    password: z.string().min(1, 'Password is required'),
+    password: z.string().min(1, 'Password is required').optional(),
     student: z.object({
       name: userNameValidationSchema,
       gender: z.enum(['male', 'female', 'other']),
@@ -56,7 +56,7 @@ const createStudentValidationZodSchema = z.object({
       guardian: guardianValidationSchema,
       localGuardian: localguardianValidationSchema,
       admissionSemester: z.string(),
-      profileImg: z.string().optional(),
+      // profileImg: z.string().optional(),
     }),
   }),
 });
@@ -148,7 +148,7 @@ const updateStudentValidationZodSchema = z.object({
         guardian: guardianUpdateSchema.optional(),
         localGuardian: localguardianUpdateSchema.optional(),
         admissionSemester: z.string().optional(),
-        profileImg: z.string().optional(),
+        // profileImg: z.string().optional(),
       })
       .partial(), // Makes all fields optional within the student object
   }),

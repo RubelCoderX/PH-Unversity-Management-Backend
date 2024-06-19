@@ -4,12 +4,13 @@ import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
-import QueryBuilder from '../../builder/queryBuilder';
 import { studentSearchableFields } from './student.constant';
+import QueryBuilder from '../../builder/queryBuilder';
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   const studentQuery = new QueryBuilder(
     Student.find()
+      .populate('user')
       .populate('admissionSemester')
       .populate({
         path: 'academicDepartment',
