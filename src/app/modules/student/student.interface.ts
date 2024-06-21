@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Model, Types } from 'mongoose';
 
 export type TGuardian = {
@@ -40,6 +41,7 @@ export type TStudent = {
   admissionSemester: Types.ObjectId;
   isDeleted: boolean;
   academicDepartment: Types.ObjectId;
+  academicFaculty: Types.ObjectId;
 };
 //for creating static
 export interface StudentModel extends Model<TStudent> {

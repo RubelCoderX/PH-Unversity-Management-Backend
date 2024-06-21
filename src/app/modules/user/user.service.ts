@@ -40,6 +40,17 @@ const createStudentIntoDB = async (
   const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester,
   );
+  if (!admissionSemester) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Admission Semester not Found!!');
+  }
+  // find Department
+  const academicDepartment = await AcademicDepartment.findById(
+    payload.academicDepartment,
+  );
+  if (!academicDepartment) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Academic Department not Found!!');
+  }
+  payload.academicFaculty = academicDepartment.academicFaculty;
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
@@ -48,10 +59,14 @@ const createStudentIntoDB = async (
       admissionSemester as TAcademicSemester,
     );
     // set image name studen id + student first name
-    const imageName = `${userData.id}${payload?.name?.firstName}`;
-    const path = file?.path;
-    // send image to cloudinary
-    const { secure_url } = await sendIamgeToCloudinary(imageName, path);
+
+    if (file) {
+      const imageName = `${userData.id}${payload?.name?.firstName}`;
+      const path = file?.path;
+      // send image to cloudinary
+      const { secure_url } = await sendIamgeToCloudinary(imageName, path);
+      payload.profileImg = secure_url as string;
+    }
 
     //   create a user [transaction -1]
     const newUser = await User.create([userData], { session });
@@ -61,7 +76,7 @@ const createStudentIntoDB = async (
     //set id,_id user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
-    payload.profileImg = secure_url;
+
     // create  a student  [transaction -2]
     const newStudent = await Student.create([payload], { session });
     if (!newStudent.length) {
@@ -106,9 +121,13 @@ const createFacultyIntoDB = async (
     // set generate id
     userData.id = await generateFacultyId();
     //set image name
-    const imageName = `${userData.id}${payload?.name?.firstName}`;
-    const path = file?.path;
-    const { secure_url } = await sendIamgeToCloudinary(imageName, path);
+    if (file) {
+      const imageName = `${userData.id}${payload?.name?.firstName}`;
+      const path = file?.path;
+      // send image to cloudinary
+      const { secure_url } = await sendIamgeToCloudinary(imageName, path);
+      payload.profileImg = secure_url as string;
+    }
 
     // create a user transaction -1
     const newUser = await User.create([userData], { session });
@@ -118,7 +137,6 @@ const createFacultyIntoDB = async (
     // set id and _id user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
-    payload.profileImg = secure_url;
 
     // create a faculty transaction -2
     const newFaculty = await Faculty.create([payload], { session });
@@ -154,10 +172,13 @@ const createAdminIntoDB = async (
     userData.id = await generateAdminId();
 
     // set image name
-    const imageName = `${userData.id}${payload?.name?.firstName}`;
-    const path = file.path;
-
-    const { secure_url } = await sendIamgeToCloudinary(imageName, path);
+    if (file) {
+      const imageName = `${userData.id}${payload?.name?.firstName}`;
+      const path = file?.path;
+      // send image to cloudinary
+      const { secure_url } = await sendIamgeToCloudinary(imageName, path);
+      payload.profileImg = secure_url as string;
+    }
     // create NewUser transaction -1
     const newUser = await User.create([userData], { session });
     if (!newUser) {
@@ -166,7 +187,7 @@ const createAdminIntoDB = async (
     // set id and _id user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
-    payload.profileImg = secure_url;
+
     //create new Admin transaction -2
     const newAdmin = await Admin.create([payload], { session });
     if (!newAdmin) {
@@ -182,8 +203,6 @@ const createAdminIntoDB = async (
   }
 };
 const getMe = async (userId: string, role: string) => {
-  // const decoded = verifyToken(token, config.jwt_access_secret as string);
-  // const { userId, role } = decoded;
   let result = null;
   if (role === 'student') {
     result = await Student.findOne({ id: userId }).populate('user');
