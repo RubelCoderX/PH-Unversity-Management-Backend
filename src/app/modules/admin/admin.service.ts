@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/queryBuilder';
 import { AdminSearchableFields } from './admin.constant';

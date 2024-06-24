@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import { Student } from './student.model';
 import AppError from '../../error/AppError';
@@ -25,7 +26,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     .sort()
     .paginate()
     .fields();
-  const meta = await studentQuery.coutTotal();
+  const meta = await studentQuery.countTotal();
   const result = await studentQuery.modelQuery;
 
   return {
@@ -85,13 +86,6 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
     ...remainingStudentData,
   };
 
-  /*
-   guardian:{
-    fatherOccupation:"Teacher"
-   }
-    
-
-  */
   //for name
   if (name && Object.keys(name).length) {
     for (const [key, value] of Object.entries(name)) {
@@ -107,7 +101,7 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
   //for local guardian
   if (localGuardian && Object.keys(localGuardian).length) {
     for (const [key, value] of Object.entries(localGuardian)) {
-      modifiedUpdateData[`localGuardian.${key}`];
+      modifiedUpdateData[`localGuardian.${key}`] = value;
     }
   }
   // console.log(modifiedUpdateData);

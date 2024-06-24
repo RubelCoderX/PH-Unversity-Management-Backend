@@ -3,6 +3,7 @@ export const calculateGradeAndPoints = (totalMarks: number) => {
     grade: 'NA',
     gradePoints: 0,
   };
+
   if (totalMarks >= 0 && totalMarks <= 39) {
     result = {
       grade: 'F',
@@ -26,12 +27,12 @@ export const calculateGradeAndPoints = (totalMarks: number) => {
   } else if (totalMarks >= 70 && totalMarks <= 79) {
     result = {
       grade: 'A',
-      gradePoints: 3.0,
+      gradePoints: 3.0, // Changed from 3.00 to 3.0
     };
   } else if (totalMarks >= 80 && totalMarks <= 89) {
     result = {
       grade: 'A+',
-      gradePoints: 4.0,
+      gradePoints: 3.5, // Adjusted from 4.00 to 3.5
     };
   } else if (totalMarks >= 90 && totalMarks <= 100) {
     result = {
@@ -44,5 +45,6 @@ export const calculateGradeAndPoints = (totalMarks: number) => {
       gradePoints: 0,
     };
   }
+
   return result;
 };

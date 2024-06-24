@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/queryBuilder';
 import { CourseSearchableFields } from './course.constant';
@@ -8,6 +9,7 @@ import httpStatus from 'http-status';
 
 const createCourseIntoDB = async (payload: TCourse) => {
   const result = await Course.create(payload);
+
   return result;
 };
 
@@ -23,10 +25,10 @@ const getAllCourseFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await courseQuery.modelQuery;
-  const meta = await courseQuery.coutTotal();
+  const meta = await courseQuery.countTotal();
   return {
-    result,
     meta,
+    result,
   };
 };
 
@@ -153,6 +155,13 @@ const assignFacultiesWithCourseIntoDB = async (
   );
   return result;
 };
+const getAssignFacultiesWithCourse = async (courseId: string) => {
+  const result = await CourseFaculty.findOne({ course: courseId }).populate(
+    'faculties',
+  );
+
+  return result;
+};
 
 const removeAssignFacultiesWithCourseFromDB = async (
   id: string,
@@ -179,5 +188,6 @@ export const CourseService = {
   updateCourseIntoDB,
   deleteCourseFromDB,
   assignFacultiesWithCourseIntoDB,
+  getAssignFacultiesWithCourse,
   removeAssignFacultiesWithCourseFromDB,
 };

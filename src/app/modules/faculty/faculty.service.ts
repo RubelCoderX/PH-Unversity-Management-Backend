@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/queryBuilder';
 import { FacultySearchableFields } from './faculty.constant';
@@ -28,7 +29,6 @@ const updateFacultiesIntoDB = async (
   id: string,
   payload: Partial<TFaculty>,
 ) => {
-  console.log(payload);
   if (!payload) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Payload is not found');
   }

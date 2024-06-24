@@ -5,7 +5,6 @@ import {
   TGuardian,
   TLocalGuardian,
   TStudent,
-  // StudentMethod,
   StudentModel,
   TUserName,
 } from './student.interface';
@@ -196,26 +195,26 @@ studentSchema.pre('findOneAndUpdate', async function (next) {
 });
 
 // Query middleware
-// //for find
-// studentSchema.pre('find', function (next) {
-//   this.find({ isDeleted: { $ne: true } });
-//   // console.log(this);
+//for find
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  // console.log(this);
 
-//   next();
-// });
+  next();
+});
 
 //for aggregate
-// studentSchema.pre('aggregate', function (next) {
-//   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
-//   next();
-// });
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
 
 //for findOne
-// studentSchema.pre('findOne', function (next) {
-//   this.find({ isDeleted: { $ne: true } });
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
 
-//   next();
-// });
+  next();
+});
 
 //creating a custome static method
 studentSchema.statics.isUserExists = async function (id: string) {
